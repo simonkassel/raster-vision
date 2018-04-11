@@ -5,6 +5,7 @@ import numpy as np
 from rastervision.core.raster_source import RasterSource
 from rastervision.core.box import Box
 from rastervision.utils.files import download_if_needed, RV_TEMP_DIR
+from rastervision.utils.misc import rescale_to_ubyte8
 
 
 def load_window(image_dataset, window=None):
@@ -40,7 +41,12 @@ class RasterioRasterSource(RasterSource):
         # the partial chip back to full window size.
         partial_chip = load_window(
             self.image_dataset, window.rasterio_format())
-        chip = np.zeros((height, width, partial_chip.shape[2]), dtype=np.uint8)
+
+        # If the chip is not uint8, rescale from 0 - 255
+        # if partial_chip.dtype != np.uint8:
+        #     partial_chip = rescale_to_ubyte8(partial_chip)
+
+        chip = np.zeros((height, width, partial_chip.shape[2]), dtype=partial_chip.dtype)#np.uint8)
         chip[0:partial_chip.shape[0], 0:partial_chip.shape[1], :] = \
             partial_chip
 

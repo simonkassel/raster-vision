@@ -34,4 +34,5 @@ def predict(batch, model):
     # Apply same transform to input as when training.
     # TODO be able to configure this transform and the one in the
     # training generator.
-    return model.predict(batch / 255.0)
+#    return model.predict(batch / 255.0)
+    return model.predict(batch / 65535.0)

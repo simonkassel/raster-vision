@@ -6,6 +6,7 @@ from rastervision.core.crs_transformer import CRSTransformer
 class RasterioCRSTransformer(CRSTransformer):
     def __init__(self, image_dataset):
         self.image_dataset = image_dataset
+        # TODO: 4326 is LatLng projection, not Web Mercator - change name from web* to ll* or similar
         self.web_proj = pyproj.Proj(init='epsg:4326')
         image_crs = image_dataset.crs['init']
         self.image_proj = pyproj.Proj(init=image_crs)

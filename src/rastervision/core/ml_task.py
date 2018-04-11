@@ -98,6 +98,7 @@ class MLTask():
                 print('Making training chips for project', end='', flush=True)
                 windows = self.get_train_windows(project, options)
                 for window in windows:
+                    # TODO: Reading chips should be lazy
                     chip = project.raster_source.get_chip(window)
                     labels = self.get_train_labels(
                         window, project, options)

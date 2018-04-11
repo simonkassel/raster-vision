@@ -48,6 +48,7 @@ class RasterSource(ABC):
             [height, width, channels] numpy array
         """
         chip = self._get_chip(window)
+        # TODO: Only read the channels you need
         return self.raster_transformer.transform(chip)
 
     @abstractmethod

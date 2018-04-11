@@ -68,10 +68,10 @@ class Trainer(object):
         # Don't apply randomized data transforms if in validation mode.
         # This will make the validation scores more comparable between epochs.
         if validation_mode:
-            generator = ImageDataGenerator(rescale=1./255)
+            generator = ImageDataGenerator(rescale=1./65535)
         else:
             generator = ImageDataGenerator(
-                rescale=1./255,
+                rescale=1./65535,
                 horizontal_flip=True,
                 vertical_flip=True)
 

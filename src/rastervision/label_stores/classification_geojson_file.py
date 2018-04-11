@@ -31,8 +31,11 @@ def get_str_tree(geojson, crs_transformer):
     polygons = []
     for json_polygon, class_id in zip(json_polygons, class_ids):
         polygon = geometry.Polygon([(p[0], p[1]) for p in json_polygon])
-        polygon.class_id = class_id
-        polygons.append(polygon)
+
+        # Make sure the polygon has area in case of bad data.
+        if polygon.area > 0:
+            polygon.class_id = class_id
+            polygons.append(polygon)
 
     return STRtree(polygons)
 
@@ -146,6 +149,7 @@ class ClassificationGeoJSONFile(ClassificationLabelStore):
             self.labels = load_geojson(
                 geojson, crs_transformer, extent, options)
         except:  # TODO do a better job of only catching "not found" errors
+            # TODO: Remove exceptions-as-control-flow logic
             if writable:
                 self.labels = ClassificationLabels()
             else:
