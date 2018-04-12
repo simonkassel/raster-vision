@@ -107,6 +107,17 @@ def load_geojson(geojson, crs_transformer, extent, options):
     """
     if options.infer_cells:
         labels = infer_labels(geojson, crs_transformer, extent, options)
+
+        # HACK: Balance the labels
+        items = list(labels.cell_to_class_id.items())
+        positives = list(filter(lambda x: x[1] == 1, items))
+        negatives = random.sample(list(filter(lambda x: x[1] != 1, items)), count1)
+
+        labels = ClassificationLabels()
+        for cell, class_id in positives:
+            labels.set_cell(cell, class_id)
+        for cell, class_id in negatives:
+            labels.set_cell(cell, class_id)
     else:
         # Use the ObjectDetectionLabels to parse bounding boxes out of the
         # GeoJSON.
