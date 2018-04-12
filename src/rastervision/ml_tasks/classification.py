@@ -14,19 +14,8 @@ from rastervision.utils.files import (
 def draw_debug_predict_image(project, class_map):
     img = project.raster_source.get_image_array()
 
-    # HACK - Delete
-    def color_correct(band):
-        min_value, max_value = (np.min(band[np.nonzero(band)]), 2500)#band.max())
-
-        return (np.maximum(((np.minimum(band, max_value) - min_value) / (max_value - min_value)), 0) * 255).astype(np.uint8)
-
-
-    x = np.transpose(img, axes=[2, 0, 1])
-    r = color_correct(x[0])
-    g = color_correct(x[1])
-    b = color_correct(x[2])
-    a = np.transpose(np.array([r, g, b]), axes=[1, 2, 0])
-    img = a
+    # from rastervision.utils.misc import hacky_bytes
+    # img = hacky_bytes(img)
 
     img = Image.fromarray(img)
     draw = ImageDraw.Draw(img, 'RGB')

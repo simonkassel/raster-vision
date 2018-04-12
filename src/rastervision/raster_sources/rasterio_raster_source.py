@@ -15,8 +15,12 @@ def load_window(image_dataset, window=None):
         window: ((row_start, row_stop), (col_start, col_stop)) or
         ((y_min, y_max), (x_min, x_max))
     """
+    try:
+        d = image_dataset.read(window=window)
+    except:
+        raise Exception("{}".format(window))
     im = np.transpose(
-        image_dataset.read(window=window), axes=[1, 2, 0])
+        d, axes=[1, 2, 0])
     return im
 
 
@@ -34,6 +38,8 @@ class RasterioRasterSource(RasterSource):
             0, 0, self.image_dataset.height, self.image_dataset.width)
 
     def _get_chip(self, window):
+        if not window.is_valid():
+            raise Exception("{}".format(window))
         height = window.get_height()
         width = window.get_width()
         # If window is off the edge of the array, the returned image will
@@ -49,5 +55,8 @@ class RasterioRasterSource(RasterSource):
         chip = np.zeros((height, width, partial_chip.shape[2]), dtype=partial_chip.dtype)#np.uint8)
         chip[0:partial_chip.shape[0], 0:partial_chip.shape[1], :] = \
             partial_chip
+
+        from rastervision.utils.misc import hacky_bytes
+        chip = hacky_bytes(chip)
 
         return chip

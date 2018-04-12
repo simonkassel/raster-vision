@@ -166,8 +166,9 @@ class KerasClassification(MLBackend):
                 model_path = download_if_needed(options.model_uri, temp_dir)
                 self.model = model_builder.build_from_path(model_path)
 
-        # Make a batch of size 1. This won't be needed once we refactor
-        # the predict method to take batches of chips.
+        # from rastervision.utils.misc import hacky_bytes
+        # chip = hacky_bytes(chip)
+
         batch = np.expand_dims(chip, axis=0)
         probs = predict(batch, self.model)
         # Add 1 to class_id since they start at 1.

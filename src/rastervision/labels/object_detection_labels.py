@@ -23,15 +23,18 @@ def geojson_to_labels(geojson, crs_transformer):
         polygon = [crs_transformer.web_to_pixel(p) for p in polygon]
         xmin, ymin = np.min(polygon, axis=0)
         xmax, ymax = np.max(polygon, axis=0)
-        boxes.append(Box(ymin, xmin, ymax, xmax))
-
-        properties = feature.get('properties', {})
-        class_ids.append(properties.get('class_id', 1))
-        scores.append(properties.get('score', 1.0))
+        box = Box(ymin, xmin, ymax, xmax)
+        if box.is_valid and crs_transformer.is_in_bounds(box):
+            boxes.append(box)
+            properties = feature.get('properties', {})
+            class_ids.append(properties.get('class_id', 1))
+            scores.append(properties.get('score', 1.0))
 
     boxes = np.array([box.npbox_format() for box in boxes], dtype=float)
+
     class_ids = np.array(class_ids)
     scores = np.array(scores)
+
     labels = ObjectDetectionLabels(boxes, class_ids, scores=scores)
     return labels
 

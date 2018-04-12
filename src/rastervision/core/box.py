@@ -34,6 +34,10 @@ class Box():
         """Return area of Box."""
         return self.get_height() * self.get_width()
 
+    def is_valid(self):
+        """Returns True if the Box is valid"""
+        return self.xmin < self.xmax and self.ymin < self.ymax
+
     def rasterio_format(self):
         """Return Box in Rasterio format."""
         return ((self.ymin, self.ymax), (self.xmin, self.xmax))

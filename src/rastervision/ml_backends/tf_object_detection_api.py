@@ -43,6 +43,7 @@ def create_tf_example(image, labels, class_map, chip_id=''):
     image.save(encoded_image, format=image_format)
     width, height = image.size
 
+
     ymins, xmins, ymaxs, xmaxs = labels.get_coordinates()
     class_ids = labels.get_class_ids()
     class_names = [class_map.get_by_id(class_id).name.encode('utf8')
@@ -115,6 +116,7 @@ def parse_tfexample(example):
     ymaxs = example.features.feature['image/object/bbox/ymax'].float_list.value
 
     nb_boxes = len(xmins)
+
     npboxes = np.empty((nb_boxes, 4))
     npboxes[:, 0] = ymins
     npboxes[:, 1] = xmins

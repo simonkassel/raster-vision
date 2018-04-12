@@ -18,6 +18,10 @@ def get_nb_images(image_dir):
     for path in pathlist:
         count += 1
 
+    pathlist = Path(image_dir).glob('**/*.tiff')
+    for path in pathlist:
+        count += 1
+
     return count
 
 
@@ -68,10 +72,12 @@ class Trainer(object):
         # Don't apply randomized data transforms if in validation mode.
         # This will make the validation scores more comparable between epochs.
         if validation_mode:
-            generator = ImageDataGenerator(rescale=1./65535)
+            # generator = ImageDataGenerator(rescale=1./65535)
+            generator = ImageDataGenerator(rescale=1./255.0)
         else:
             generator = ImageDataGenerator(
-                rescale=1./65535,
+                # rescale=1./65535,
+                rescale=1./255.0,
                 horizontal_flip=True,
                 vertical_flip=True)
 

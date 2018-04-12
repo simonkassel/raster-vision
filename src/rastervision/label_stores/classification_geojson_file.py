@@ -84,6 +84,7 @@ def infer_labels(geojson, crs_transformer, extent, options):
             class_id = class_ids[np.argmax(intersection_over_cells)]
 
         labels.set_cell(cell, class_id)
+    print("LABELS: {}".format(len(list(filter(lambda x: x is not None, labels.cell_to_class_id.values())))))
     return labels
 
 

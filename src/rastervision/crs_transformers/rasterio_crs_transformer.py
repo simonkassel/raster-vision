@@ -10,6 +10,7 @@ class RasterioCRSTransformer(CRSTransformer):
         self.web_proj = pyproj.Proj(init='epsg:4326')
         image_crs = image_dataset.crs['init']
         self.image_proj = pyproj.Proj(init=image_crs)
+        print("SHAPE OF YOU {}".format(self.image_dataset.shape))
 
     def web_to_pixel(self, web_point):
         image_point = pyproj.transform(
@@ -24,3 +25,10 @@ class RasterioCRSTransformer(CRSTransformer):
         web_point = pyproj.transform(
             self.image_proj, self.web_proj, image_point[0], image_point[1])
         return web_point
+
+    def is_in_bounds(self, box):
+        height, width = self.image_dataset.shape
+        return box.xmin >= 0 and \
+            box.ymin >= 0 and \
+            box.xmax < width and \
+            box.ymax < height

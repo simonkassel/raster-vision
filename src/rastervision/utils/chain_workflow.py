@@ -271,6 +271,11 @@ def main(workflow_uri, tasks, remote, simulated_remote, branch, run):
     if len(tasks) == 0:
         tasks = ALL_TASKS
 
+    # TODO: Check if tasks are valid
+    for task in tasks:
+        if not task in ALL_TASKS:
+            raise Exception("Task '{}' is not a valid task.".format(task))
+
     workflow = ChainWorkflow(workflow_uri, remote=(remote or simulated_remote))
     workflow.save_configs(tasks)
 

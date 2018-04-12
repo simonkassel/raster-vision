@@ -103,6 +103,9 @@ class MLTask():
                     labels = self.get_train_labels(
                         window, project, options)
                     training_data.append(chip, labels)
+                    # if labels.get_class_id() is not None:
+                    #     print('x', end='', flush=True)
+                    # else:
                     print('.', end='', flush=True)
                 print()
                 # TODO load and delete project data as needed to avoid
@@ -142,6 +145,8 @@ class MLTask():
                 raster_source.get_extent(), options)
             for window in windows:
                 chip = raster_source.get_chip(window)
+                # from rastervision.utils.misc import hacky_bytes
+                # chip = hacky_bytes(chip)
                 labels = self.backend.predict(chip, options)
                 label_store.extend(window, labels)
                 print('.', end='', flush=True)
