@@ -9,7 +9,7 @@ def color_correct(band):
         #     min_value = np.min(band[np.nonzero(band)])
 
         min_value = 0
-        max_value = 1800
+        max_value = 3000
 
         return (np.maximum(((np.minimum(band, max_value) - min_value) / (max_value - min_value)), 0) * 255).astype(np.uint8)
 
