@@ -15,15 +15,15 @@ class ObjectDetectionGeoJSONFile(ObjectDetectionLabelStore):
         self.crs_transformer = crs_transformer
         self.writable = writable
 
-        # try:
-        geojson = json.loads(file_to_str(uri))
-        self.labels = ObjectDetectionLabels.from_geojson(
+        try:
+            geojson = json.loads(file_to_str(uri))
+            self.labels = ObjectDetectionLabels.from_geojson(
                 geojson, crs_transformer)
-        # except:
-        #     if writable:
-        #         self.labels = ObjectDetectionLabels.make_empty()
-        #     else:
-        #         raise ValueError('Could not open {}'.format(uri))
+        except:
+            if writable:
+                self.labels = ObjectDetectionLabels.make_empty()
+            else:
+                raise ValueError('Could not open {}'.format(uri))
 
     def save(self, class_map):
         if self.writable:
