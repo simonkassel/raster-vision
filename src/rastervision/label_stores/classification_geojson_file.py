@@ -12,6 +12,10 @@ from rastervision.utils.files import file_to_str, str_to_file
 from rastervision.label_stores.classification_label_store import (
         ClassificationLabelStore)
 
+from rastervision.core.box import Box
+
+import random
+
 
 def get_str_tree(geojson, crs_transformer):
     features = geojson['features']
@@ -74,8 +78,10 @@ def infer_labels(geojson, crs_transformer, extent, options):
 
         # Infer class id for cell.
         if len(class_ids) == 0:
-            class_id = (None if options.background_class_id == 0
-                        else options.background_class_id)
+            # HACK - Need to prefer labelled background over random background
+            class_id = -1
+            # class_id = (None if options.background_class_id == 0
+            #             else options.background_class_id)
         elif options.pick_min_class_id:
             class_id = min(class_ids)
         else:
@@ -111,13 +117,17 @@ def load_geojson(geojson, crs_transformer, extent, options):
         # HACK: Balance the labels
         items = list(labels.cell_to_class_id.items())
         positives = list(filter(lambda x: x[1] == 1, items))
-        negatives = random.sample(list(filter(lambda x: x[1] != 1, items)), count1)
+        class2 = list(filter(lambda x: x[1] == 2, items))
+        random2 = random.sample(list(filter(lambda x: x[1] == -1, items)), len(positives) - len(class2))
 
         labels = ClassificationLabels()
         for cell, class_id in positives:
-            labels.set_cell(cell, class_id)
-        for cell, class_id in negatives:
-            labels.set_cell(cell, class_id)
+            labels.set_cell(Box.from_npbox(cell), class_id)
+        for cell, class_id in class2:
+            labels.set_cell(Box.from_npbox(cell), class_id)
+        for cell, class_id in random2:
+            labels.set_cell(Box.from_npbox(cell), 2)
+
     else:
         # Use the ObjectDetectionLabels to parse bounding boxes out of the
         # GeoJSON.
