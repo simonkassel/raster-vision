@@ -44,6 +44,8 @@ class BoxList(object):
     if not isinstance(data, np.ndarray):
       raise ValueError('data must be a numpy array.')
     if len(data.shape) != 2 or data.shape[1] != 4:
+      print(data)
+      print(data.shape)
       raise ValueError('Invalid dimensions for box data.')
     if data.dtype != np.float32 and data.dtype != np.float64:
       raise ValueError('Invalid data type for box data: float is required.')
