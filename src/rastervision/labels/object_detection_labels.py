@@ -35,7 +35,10 @@ def geojson_to_labels(geojson, crs_transformer):
     class_ids = np.array(class_ids)
     scores = np.array(scores)
 
-    labels = ObjectDetectionLabels(boxes, class_ids, scores=scores)
+    if boxes.any():
+        labels = ObjectDetectionLabels(boxes, class_ids, scores=scores)
+    else:
+        labels = ObjectDetectionLabels.make_empty()
     return labels
 
 
@@ -46,7 +49,6 @@ def inverse_change_coordinate_frame(boxlist, window):
     boxlist_new = BoxList(npboxes)
     _copy_extra_fields(boxlist_new, boxlist)
     return boxlist_new
-
 
 class ObjectDetectionLabels(Labels):
     def __init__(self, npboxes, class_ids, scores=None):
